@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-xl">
+  <nav class="navbar navbar-expand-xl fixed-top">
     <div class="container">
       <router-link class="navbar-brand" to="/">
         <span class="letterboxed-brand">Letterboxed</span>
@@ -23,6 +23,9 @@
             <router-link class="nav-link" to="/" active-class="active"
               >Home</router-link
             >
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/browse" active-class="active">Browse</router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/news" active-class="active"
@@ -58,8 +61,13 @@ export default {
 
 <style scoped>
 .navbar {
-  margin-top: 20px;
   margin-bottom: 10px;
+}
+
+.container {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    padding: 1rem;
 }
 
 .letterboxed-brand {

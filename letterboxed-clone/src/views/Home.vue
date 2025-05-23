@@ -52,7 +52,7 @@ export default {
     justify-content: center;
     align-items: center;
     border-radius: 2rem;
-    margin-top: 1rem;
+    margin-top: 6rem;
     margin-bottom: 1rem;
 }
 

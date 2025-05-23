@@ -1,5 +1,5 @@
 <template>
-  <div class="tmdb-cards">
+  <div class="featured-cards">
     <h2 class="my-3">Recommended Movies</h2>
     <div class="row">
       <div
@@ -27,7 +27,7 @@ export default {
   name: "TMDBCards",
   data() {
     return {
-      movies: [], // Array to store movie data
+      movies: [],
     };
   },
   methods: {
@@ -51,10 +51,10 @@ export default {
 </script>
 
 <style scoped>
-.tmdb-cards .card {
+.featured-cards .card {
   border: none;
 }
-.tmdb-cards .card-img-top {
+.featured-cards .card-img-top {
   object-fit: cover;
 }
 </style>
