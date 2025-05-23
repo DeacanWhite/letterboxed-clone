@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "date": "2025-05-20",
+    "title": "Blockbuster Director Teases Sci-Fi Epic",
+    "category": "Film Industry",
+    "content": "Acclaimed director Jane Doe hinted at a groundbreaking new sci-fi project during a recent interview, promising stunning visuals and a thought-provoking narrative.",
+    "imageUrl": "https://placehold.co/150x150"
+  },
+  {
+    "id": 2,
+    "date": "2025-05-18",
+    "title": "Indie Gem 'Whispering Pines' Wins Big at Sundance",
+    "category": "Film Festivals",
+    "content": "The low-budget drama 'Whispering Pines' surprised many by taking home the Grand Jury Prize at the Sundance Film Festival, drawing praise for its raw performances.",
+    "imageUrl": "https://placehold.co/150x150"
+  },
+  {
+    "id": 3,
+    "date": "2025-05-15",
+    "title": "Casting Rumors Swirl for 'Dimension Drifters' Sequel",
+    "category": "Casting News",
+    "content": "Fans are buzzing with speculation as new names surface for potential roles in the highly anticipated sequel to last year's hit 'Dimension Drifters'.",
+    "imageUrl": "https://placehold.co/150x150"
+  },
+  {
+    "id": 4,
+    "date": "2025-05-12",
+    "title": "Classic Horror Remake Gets Greenlight",
+    "category": "Remakes",
+    "content": "A beloved 80s horror classic is officially getting a modern remake, with production set to begin later this year. Details on the director are still under wraps.",
+    "imageUrl": "https://placehold.co/150x150"
+  },
+  {
+    "id": 5,
+    "date": "2025-05-10",
+    "title": "Streaming Platform Announces Ambitious Original Film Slate",
+    "category": "Streaming",
+    "content": "A major streaming service revealed plans for an extensive lineup of original films to be released throughout the next year, aiming to compete with traditional studios.",
+    "imageUrl": "https://placehold.co/150x150"
+  },
+  {
+    "id": 6,
+    "date": "2025-05-08",
+    "title": "Award-Winning Actor Joins Historical Drama",
+    "category": "Casting News",
+    "content": "Fresh off their recent Oscar win, a renowned actor has been confirmed to star in an upcoming historical drama set in the 18th century.",
+    "imageUrl": "https://placehold.co/150x150"
+  },
+  {
+    "id": 7,
+    "date": "2025-05-05",
+    "title": "Animation Studio Unveils New Feature Film Concept",
+    "category": "Animation",
+    "content": "A prominent animation studio showcased an exciting new concept for their next animated feature, promising a blend of unique art style and heartfelt storytelling.",
+    "imageUrl": "https://placehold.co/150x150"
+  },
+  {
+    "id": 8,
+    "date": "2025-05-02",
+    "title": "Film Critics Debate Future of Cinema",
+    "category": "Film Industry",
+    "content": "Leading film critics engaged in a lively discussion about the evolving landscape of cinema, touching upon streaming, AI, and audience engagement.",
+    "imageUrl": "https://placehold.co/150x150"
+  },
+  {
+    "id": 9,
+    "date": "2025-04-30",
+    "title": "Director Interview: Bringing 'Cosmic Voyage' to Life",
+    "category": "Behind the Scenes",
+    "content": "The director of the visually stunning 'Cosmic Voyage' shares insights into the challenges and triumphs of bringing their ambitious vision to the big screen.",
+    "imageUrl": "https://placehold.co/150x150"
+  },
+  {
+    "id": 10,
+    "date": "2025-04-28",
+    "title": "Action Thriller Sequel Sets Box Office Record",
+    "category": "Box Office",
+    "content": "The highly anticipated sequel to a popular action thriller broke opening weekend box office records, signaling a strong start for the summer movie season.",
+    "imageUrl": "https://placehold.co/150x150"
+  }
+]
