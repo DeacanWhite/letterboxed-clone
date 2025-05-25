@@ -145,7 +145,7 @@ export default {
         this.error = null;
         var self = this;
 
-        $.getJSON('/assets/news.json', function(data) {
+        $.getJSON('./assets/news.json', function(data) {
             self.newsItems = data;
         })
         .fail(function(jqXHR, textStatus, errorThrown) {

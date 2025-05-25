@@ -29,14 +29,37 @@
         <div v-if="!loading && !error && currentItems.length" class="row">
             <div v-for="item in currentItems" :key="item.id" class="col-md-6 col-lg-4 col-xl-3 mb-4">
                 <div class="card">
-                    <img 
-                        v-if="item.poster_path" 
-                        :src="`https://image.tmdb.org/t/p/w500${item.poster_path}`" 
-                        class="card-img" 
-                        :alt="item.title || item.name" 
-                    />
-                    <div v-else class="card-img no-poster d-flex align-items-center justify-content-center">
-                        <span>No poster available</span>
+                    <div class="card-image-container">
+                        <img 
+                            v-if="item.poster_path" 
+                            :src="`https://image.tmdb.org/t/p/w500${item.poster_path}`" 
+                            class="card-img" 
+                            :alt="item.title || item.name" 
+                        />
+                        <div v-else class="card-img no-poster d-flex align-items-center justify-content-center">
+                            <span>No poster available</span>
+                        </div>
+                        
+                        <!-- Watchlist button -->
+                        <div class="watchlist-btn-container">
+                            <button 
+                                v-if="isAuthenticated"
+                                @click="toggleWatchlist(item)"
+                                class="btn watchlist-btn"
+                                :class="isInWatchlist(item.id) ? 'btn-danger' : 'btn-outline-light'"
+                                :title="isInWatchlist(item.id) ? 'Remove from Watchlist' : 'Add to Watchlist'"
+                            >
+                                <i :class="isInWatchlist(item.id) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                            </button>
+                            <button 
+                                v-else
+                                @click="showLoginPrompt"
+                                class="btn watchlist-btn btn-outline-light"
+                                title="Login to add to watchlist"
+                            >
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="card-body">
@@ -78,6 +101,26 @@
                 :active-class="'active'"
             />
         </div>
+
+        <!-- Login prompt modal -->
+        <div v-if="showModal" class="modal-overlay" @click="closeModal">
+            <div class="modal-content" @click.stop>
+                <div class="modal-header">
+                    <h4>Login Required</h4>
+                    <button @click="closeModal" class="btn-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Please log in to add movies to your watchlist.</p>
+                </div>
+                <div class="modal-footer">
+                    <button @click="closeModal" class="btn btn-secondary">Cancel</button>
+                    <router-link to="/login" class="btn btn-primary" @click="closeModal">
+                        Go to Login
+                    </router-link>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -95,10 +138,15 @@ export default {
             error: null,
             currentPage: 1,
             itemsPerPage: 10,
-            timeWindow: 'week'
+            timeWindow: 'week',
+            watchlist: [],
+            showModal: false
         };
     },
     computed: {
+        isAuthenticated() {
+            return localStorage.getItem('isAuthenticated') === 'true';
+        },
         // Get the movies/TV shows for current page
         currentItems() {
             const startIndex = (this.currentPage - 1) * this.itemsPerPage;
@@ -164,10 +212,73 @@ export default {
                 return dateString;
             }
         },
+
+        // Watchlist methods
+        loadWatchlist() {
+            if (this.isAuthenticated) {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const watchlistKey = `watchlist_${user.id}`;
+                this.watchlist = JSON.parse(localStorage.getItem(watchlistKey) || '[]');
+            }
+        },
+
+        saveWatchlist() {
+            if (this.isAuthenticated) {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const watchlistKey = `watchlist_${user.id}`;
+                localStorage.setItem(watchlistKey, JSON.stringify(this.watchlist));
+            }
+        },
+
+        isInWatchlist(movieId) {
+            return this.watchlist.some(item => item.id === movieId);
+        },
+
+        toggleWatchlist(movie) {
+            if (!this.isAuthenticated) {
+                this.showLoginPrompt();
+                return;
+            }
+
+            const index = this.watchlist.findIndex(item => item.id === movie.id);
+            
+            if (index > -1) {
+                // Remove from watchlist
+                this.watchlist.splice(index, 1);
+            } else {
+                // Add to watchlist
+                const watchlistItem = {
+                    id: movie.id,
+                    title: movie.title || movie.name,
+                    poster_path: movie.poster_path,
+                    media_type: movie.media_type,
+                    vote_average: movie.vote_average,
+                    release_date: movie.release_date || movie.first_air_date,
+                    added_date: new Date().toISOString()
+                };
+                this.watchlist.push(watchlistItem);
+            }
+            
+            this.saveWatchlist();
+        },
+
+        showLoginPrompt() {
+            this.showModal = true;
+        },
+
+        closeModal() {
+            this.showModal = false;
+        }
     },
     mounted() {
         // Fetch trending data when component is mounted
         this.fetchTrending();
+        this.loadWatchlist();
+    },
+    watch: {
+        isAuthenticated() {
+            this.loadWatchlist();
+        }
     }
 };
 </script>
@@ -216,6 +327,95 @@ export default {
 .star {
     color: #FFD700;
     margin-right: 5px;
+}
+/* Watchlist button styles */
+.watchlist-btn-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+.watchlist-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.watchlist-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: white;
+    transform: scale(1.1);
+}
+
+.watchlist-btn.btn-danger {
+    background: rgba(220, 53, 69, 0.9);
+    border-color: #dc3545;
+}
+
+.watchlist-btn.btn-danger:hover {
+    background: #dc3545;
+}
+
+/* Modal styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 0.5rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-header h4 {
+    margin: 0;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
 }
 
 /* Pagination styles - similar to News component */
