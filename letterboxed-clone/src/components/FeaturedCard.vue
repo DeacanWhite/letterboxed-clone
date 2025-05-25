@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  name: "TMDBCards",
+  name: "FeauturedCard",
   data() {
     return {
       movies: [],

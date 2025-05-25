@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import TMDBCards from '../components/TMDBCards.vue';
+import TMDBCards from '../components/FeaturedCard.vue';
 
 export default {
     name: 'HomeView',
