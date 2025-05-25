@@ -93,7 +93,7 @@ export default {
 
             return isValid;
         },
-        /*
+        
         async login() {
             if (!this.validateForm()) {
                 return;
@@ -138,9 +138,9 @@ export default {
                 this.loading = false;
             }
         },
-        */
 
         // Mock login function to simulate API call
+        /*
         async login() {
             if (!this.validateForm()) {
                 return;
@@ -150,9 +150,9 @@ export default {
             this.errorMessage = '';
 
             try {
-                // Mock API call - simulates the same structure as your original
+                // Mock API call
                 const mockApiCall = async (requestOptions) => {
-                    // Simulate network delay
+
                     await new Promise(resolve => setTimeout(resolve, 800));
                     
                     // Mock user database
@@ -168,12 +168,12 @@ export default {
                         u.password === requestData.password
                     );
                     
-                    // Return null if invalid credentials (matches your original API expectation)
+                    // Return null if invalid credentials
                     if (!user) {
                         return null;
                     }
                     
-                    // Return user data (without password)
+                    // Return user data
                     return {
                         id: user.id,
                         username: user.username,
@@ -192,9 +192,6 @@ export default {
                     })
                 };
 
-                // Use mock API instead of real fetch
-                // const response = await fetch("resources/api_user.php/", requestOptions);
-                // const data = await response.json();
                 const data = await mockApiCall(requestOptions);
                 
                 if (data == null) {
@@ -217,6 +214,7 @@ export default {
                 this.loading = false;
             }
         },
+        */
 
         reset() {
             this.input.username = '';

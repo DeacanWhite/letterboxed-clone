@@ -23,7 +23,7 @@ if ($method == 'POST') {
     
     $username = mysqli_real_escape_string($conn, $input['username']);
     $password = mysqli_real_escape_string($conn, $input['password']);
-    $email = mysqli_real_escape_string($conn, $input['email']); // Add this line
+    $email = mysqli_real_escape_string($conn, $input['email']);
     
     // Check if username already exists
     $check = mysqli_query($conn, "SELECT * FROM users WHERE username='$username'");

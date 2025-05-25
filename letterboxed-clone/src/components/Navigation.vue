@@ -51,17 +51,6 @@
           </li>
         </ul>
 
-        <!-- Search form (show only when authenticated) -->
-        <form v-if="isAuthenticated" class="d-flex me-3">
-          <input
-            class="form-control me-2"
-            type="search"
-            placeholder="Search movies..."
-            aria-label="Search"
-          />
-          <button type="button" class="btn btn-dark">Search</button>
-        </form>
-
         <!-- Log in and Sign up buttons -->
         <div class="auth-section">
           <!-- Show when not authenticated -->
@@ -161,6 +150,7 @@ export default {
 .letterboxed-brand {
   font-weight: 700;
   letter-spacing: 0.5px;
+  color: #667eea;
 }
 
 .nav-link {

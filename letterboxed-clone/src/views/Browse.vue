@@ -28,7 +28,7 @@
         
         <div v-if="!loading && !error && currentItems.length" class="row">
             <div v-for="item in currentItems" :key="item.id" class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                <div class="card">
+                <div class="card movie-card" @click="goToDetails(item)">
                     <div class="card-image-container">
                         <img 
                             v-if="item.poster_path" 
@@ -44,7 +44,7 @@
                         <div class="watchlist-btn-container">
                             <button 
                                 v-if="isAuthenticated"
-                                @click="toggleWatchlist(item)"
+                                @click.stop="toggleWatchlist(item)"
                                 class="btn watchlist-btn"
                                 :class="isInWatchlist(item.id) ? 'btn-danger' : 'btn-outline-light'"
                                 :title="isInWatchlist(item.id) ? 'Remove from Watchlist' : 'Add to Watchlist'"
@@ -196,6 +196,19 @@ export default {
                 this.fetchTrending();
             }
         },
+
+        // Navigate to details page
+        goToDetails(item) {
+            // Determine if it's a movie or TV show
+            const type = item.media_type === 'movie' ? 'movie' : 'tv';
+            this.$router.push({
+                name: 'Details',
+                params: {
+                    type: type,
+                    id: item.id
+                }
+            });
+        },
         
         // Format date to a more readable format
         formatDate(dateString) {
@@ -299,6 +312,42 @@ export default {
     justify-content: center;
 }
 
+/* Update the button styles */
+.time-window-selector .btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    margin: 0 0.25rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+}
+
+.time-window-selector .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.time-window-selector .btn.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+    transform: translateY(-2px);
+}
+
+.time-window-selector .btn.btn-outline-primary {
+    background: rgba(102, 126, 234, 0.1);
+    border: 2px solid #667eea;
+    color: #667eea;
+}
+
+.time-window-selector .btn.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+}
+
 .card{
     border: none;
     border-radius: 1rem;
@@ -327,6 +376,16 @@ export default {
 .star {
     color: #FFD700;
     margin-right: 5px;
+}
+
+/* Movie card hover effects */
+.movie-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
 }
 /* Watchlist button styles */
 .watchlist-btn-container {
@@ -426,31 +485,64 @@ export default {
     align-items: center;
     list-style-type: none;
     padding: 0;
+    gap: 0.5rem;
 }
 
 :deep(.pagination-controls .page-item) {
-    margin: 0 0.25rem;
+    margin: 0;
 }
 
 :deep(.pagination-controls .page-link) {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    border: 2px solid #667eea;
     cursor: pointer;
-    color: #007bff;
+    color: #667eea;
     text-decoration: none;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(102, 126, 234, 0.2);
+}
+
+:deep(.pagination-controls .page-item:first-child .page-link) {
+    border-radius: 0.5rem 0.5rem 0.5rem 0.5rem;
+}
+
+:deep(.pagination-controls .page-item:last-child .page-link) {
+    border-radius: 0.5rem 0.5rem 0.5rem 0.5rem;
+}
+
+:deep(.pagination-controls .page-link:hover) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
 }
 
 :deep(.pagination-controls .active .page-link) {
-    background-color: #007bff;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    border-color: #007bff;
+    border-color: transparent;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+    transform: translateY(-2px);
 }
 
 :deep(.pagination-controls .disabled .page-link) {
-    color: #6c757d;
+    color: #ccc;
     pointer-events: none;
-    cursor: auto;
-    background-color: #fff;
+    cursor: not-allowed;
+    background-color: #f8f9fa;
     border-color: #dee2e6;
+    box-shadow: none;
+    transform: none;
+}
+
+:deep(.pagination-controls .disabled .page-link:hover) {
+    background-color: #f8f9fa;
+    color: #ccc;
+    transform: none;
+    box-shadow: none;
 }
 </style>

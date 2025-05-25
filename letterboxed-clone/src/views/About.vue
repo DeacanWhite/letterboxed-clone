@@ -2,9 +2,11 @@
     <div class="about">
         <h1>About Letterboxed Clone</h1>
         <p>
-            This project is a clone of the popular word puzzle game Letterboxed.
-            It is built with Vue.js and aims to provide a fun and challenging experience for word game enthusiasts.
-            Players must connect letters around a square to form words, using all sides efficiently.
+            This project is a clone of the popular movie discover app Letterboxed.
+            It is built with Vue.js and aims to provide a easy discovery experience for movie enthusiasts.
+            Users can browse movies, read reviews, and manage their watchlist.
+            The app features a personalized experience where users can enter their names and select their preferred view.
+            The app also includes a simple authentication system to manage user sessions.
         </p>
 
         <div class="user-input-section">
@@ -79,12 +81,13 @@ export default {
 <style scoped>
 .about {
     margin: 2rem auto;
+    margin-top: 6rem;
     padding: 2rem;
     text-align: center;
 }
 
 h1 {
-    margin-bottom: 1rem;
+    margin-bottom: 3rem;
     color: #2c3e50;
 }
 

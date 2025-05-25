@@ -21,7 +21,7 @@
 
         <div v-else class="row">
             <div v-for="item in watchlist" :key="item.id" class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                <div class="card">
+                <div class="card movie-card" @click="goToDetails(item)">
                     <div class="card-image-container">
                         <img 
                             v-if="item.poster_path" 
@@ -36,7 +36,7 @@
                         <!-- Remove from watchlist button -->
                         <div class="watchlist-btn-container">
                             <button 
-                                @click="removeFromWatchlist(item.id)"
+                                @click.stop="removeFromWatchlist(item.id)"
                                 class="btn watchlist-btn btn-danger"
                                 title="Remove from Watchlist"
                             >
@@ -86,6 +86,19 @@ export default {
         }
     },
     methods: {
+        // Navigate to details page
+        goToDetails(item) {
+            const type = item.media_type === 'movie' ? 'movie' : 'tv';
+            this.$router.push({
+                name: 'Details',
+                params: {
+                    type: type,
+                    id: item.id
+                }
+            });
+        },
+
+        // Load watchlist from localStorage
         loadWatchlist() {
             this.loading = true;
             
@@ -98,6 +111,7 @@ export default {
             this.loading = false;
         },
 
+        // Save watchlist to localStorage
         saveWatchlist() {
             if (this.isAuthenticated) {
                 const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -106,6 +120,7 @@ export default {
             }
         },
 
+        // Remove item from watchlist
         removeFromWatchlist(movieId) {
             const index = this.watchlist.findIndex(item => item.id === movieId);
             if (index > -1) {
@@ -114,6 +129,7 @@ export default {
             }
         },
 
+        // Format date to a readable string
         formatDate(dateString) {
             if (!dateString) return 'Unknown';
             
@@ -155,7 +171,12 @@ export default {
     padding: 3rem 1rem;
 }
 
-.card {
+.btn-primary {
+    background-color: #667eea;
+    border: none;
+}
+
+.card{
     border: none;
     border-radius: 1rem;
     overflow: hidden;
@@ -164,16 +185,12 @@ export default {
     padding: 0;
 }
 
-.card-image-container {
-    position: relative;
-}
-
 .card-body {
     text-align: left;
 }
 
 .card-img {
-    height: 300px;
+    height: 100%;
     object-fit: cover;
 }
 
@@ -191,6 +208,16 @@ export default {
 
 .added-date {
     margin-bottom: 0;
+}
+
+/* Movie card hover effects */
+.movie-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
 }
 
 /* Watchlist button styles */

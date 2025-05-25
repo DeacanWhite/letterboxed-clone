@@ -43,6 +43,14 @@ export default {
     align-items: center;
 }
 
+.home-content h1 {
+    margin: 3rem;
+}
+
+.home-content p{
+    margin-bottom: 6rem;
+}
+
 .hero-section {
     background: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center;
     background-size: cover;

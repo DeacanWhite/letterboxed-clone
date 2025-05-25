@@ -5,7 +5,6 @@
             <div class="welcome-section">
                 <div class="welcome-content">
                     <h1 class="welcome-title">Welcome back, {{ username }}!</h1>
-                    <p class="welcome-subtitle">Ready to discover your next favorite movie?</p>
                 </div>
                 <div class="user-avatar">
                     <div class="avatar-circle">
@@ -26,7 +25,7 @@
                         <div class="action-icon">📰</div>
                         <span>Latest News</span>
                     </router-link>
-                    <router-link to="/news" class="action-btn">
+                    <router-link to="/watchlist" class="action-btn">
                         <div class="action-icon">📰</div>
                         <span>View Watchlist</span>
                     </router-link>

@@ -7,6 +7,7 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Watchlist from '../views/Watchlist.vue'
+import Details from '../views/Details.vue'
 
 const routes = [
     {
@@ -52,6 +53,12 @@ const routes = [
         name: 'Watchlist',
         component: Watchlist,
         meta: { requiresAuth: true } // Require authentication for watchlist
+    },
+    {
+        path: '/details/:type/:id',
+        name: 'Details',
+        component: Details,
+        props: true // Pass route params as props to component
     }
 ];
 

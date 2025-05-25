@@ -163,6 +163,7 @@ export default {
 <style scoped>
 .news-view {
     padding: 2rem;
+    margin-top: 6rem;
 }
 
 .filters {
@@ -171,8 +172,10 @@ export default {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     padding: 1rem;
-    background-color: #f8f9fa;
     border-radius: 8px;
+    border-color: #667eea;
+    margin-top: 3rem;
+    margin-bottom: 5rem;
 }
 
 .filter-group {
@@ -231,7 +234,9 @@ li:last-child {
 }
 
 .news-content {
-    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .news-date {
@@ -250,38 +255,72 @@ h2 {
     color: #212529;
 }
 
+/* Pagination styles - similar to News component */
 .pagination-controls {
     margin-top: 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    list-style-type: none; 
+    list-style-type: none;
     padding: 0;
+    gap: 0.5rem;
 }
 
 :deep(.pagination-controls .page-item) {
-    margin: 0 0.25rem;
+    margin: 0;
 }
 
-:deep(.pagination-controls .page-item .page-link) {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #ddd;
+:deep(.pagination-controls .page-link) {
+    padding: 0.75rem 1rem;
+    border: 2px solid #667eea;
     cursor: pointer;
-    color: #007bff;
+    color: #667eea;
     text-decoration: none;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(102, 126, 234, 0.2);
 }
 
-:deep(.pagination-controls .page-item.active .page-link) {
-    background-color: #007bff;
+:deep(.pagination-controls .page-item:first-child .page-link) {
+    border-radius: 0.5rem 0.5rem 0.5rem 0.5rem;
+}
+
+:deep(.pagination-controls .page-item:last-child .page-link) {
+    border-radius: 0.5rem 0.5rem 0.5rem 0.5rem;
+}
+
+:deep(.pagination-controls .page-link:hover) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    border-color: #007bff;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
 }
 
-:deep(.pagination-controls .page-item.disabled .page-link) {
-    color: #6c757d;
+:deep(.pagination-controls .active .page-link) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+    transform: translateY(-2px);
+}
+
+:deep(.pagination-controls .disabled .page-link) {
+    color: #ccc;
     pointer-events: none;
-    cursor: auto;
-    background-color: #fff;
+    cursor: not-allowed;
+    background-color: #f8f9fa;
     border-color: #dee2e6;
+    box-shadow: none;
+    transform: none;
+}
+
+:deep(.pagination-controls .disabled .page-link:hover) {
+    background-color: #f8f9fa;
+    color: #ccc;
+    transform: none;
+    box-shadow: none;
 }
 </style>

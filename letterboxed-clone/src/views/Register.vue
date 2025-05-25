@@ -60,20 +60,6 @@
                         <div v-if="confirmPasswordError" class="invalid-feedback">{{ confirmPasswordError }}</div>
                     </div>
 
-                    <div class="form-group form-check">
-                        <input 
-                            type="checkbox" 
-                            id="terms" 
-                            v-model="input.acceptTerms" 
-                            :class="{'is-invalid': termsError}"
-                            required 
-                        />
-                        <label for="terms" class="form-check-label">
-                            I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="terms-link">Privacy Policy</a>
-                        </label>
-                        <div v-if="termsError" class="invalid-feedback">{{ termsError }}</div>
-                    </div>
-
                     <button type="submit" class="btn btn-primary" :disabled="loading">
                         <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
                         {{ loading ? 'Creating Account...' : 'Create Account' }}
@@ -108,7 +94,6 @@ export default {
                 email: "",
                 password: "",
                 confirmPassword: "",
-                acceptTerms: false
             },
             loading: false,
             errorMessage: '',
@@ -116,8 +101,7 @@ export default {
             usernameError: '',
             emailError: '',
             passwordError: '',
-            confirmPasswordError: '',
-            termsError: ''
+            confirmPasswordError: ''
         }
     },
     methods: {
@@ -127,7 +111,6 @@ export default {
             this.emailError = '';
             this.passwordError = '';
             this.confirmPasswordError = '';
-            this.termsError = '';
             let isValid = true;
 
             // Username validation
@@ -175,11 +158,6 @@ export default {
                 isValid = false;
             }
 
-            // Terms validation
-            if (!this.input.acceptTerms) {
-                this.termsError = 'You must accept the terms and conditions';
-                isValid = false;
-            }
 
             return isValid;
         },
@@ -233,8 +211,7 @@ export default {
                 username: "",
                 email: "",
                 password: "",
-                confirmPassword: "",
-                acceptTerms: false
+                confirmPassword: ""
             };
             this.errorMessage = '';
             this.successMessage = '';
@@ -242,7 +219,6 @@ export default {
             this.emailError = '';
             this.passwordError = '';
             this.confirmPasswordError = '';
-            this.termsError = '';
         }
     }
 }
@@ -315,32 +291,6 @@ export default {
 
 .form-group input.is-invalid {
     border-color: #dc3545;
-}
-
-.form-check {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-}
-
-.form-check input[type="checkbox"] {
-    margin-top: 0.25rem;
-    flex-shrink: 0;
-}
-
-.form-check-label {
-    font-size: 0.9rem;
-    color: #666;
-    line-height: 1.4;
-}
-
-.terms-link {
-    color: #667eea;
-    text-decoration: none;
-}
-
-.terms-link:hover {
-    text-decoration: underline;
 }
 
 .invalid-feedback {
