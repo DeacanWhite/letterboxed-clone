@@ -114,7 +114,6 @@ export default {
                     })
                 };
 
-                // You'll need to update this URL to match your API endpoint
                 const response = await fetch("resources/api_user.php/", requestOptions);
                 const data = await response.json();
                 

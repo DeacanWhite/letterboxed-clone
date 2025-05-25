@@ -41,14 +41,25 @@
           <small class="text-muted">{{ newReview.review_text.length }}/1000 characters</small>
         </div>
         
-        <button 
-          type="submit" 
-          class="btn btn-primary"
-          :disabled="submitting || !newReview.rating"
-        >
-          <span v-if="submitting" class="spinner-border spinner-border-sm me-2"></span>
-          {{ submitting ? 'Submitting...' : 'Submit Review' }}
-        </button>
+        <div class="form-buttons">
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            :disabled="submitting || !newReview.rating"
+          >
+            <span v-if="submitting" class="spinner-border spinner-border-sm me-2"></span>
+            {{ submitting ? (editingReview ? 'Updating...' : 'Submitting...') : (editingReview ? 'Update Review' : 'Submit Review') }}
+          </button>
+          
+          <button 
+            v-if="editingReview"
+            type="button" 
+            class="btn btn-secondary ms-2"
+            @click="cancelEdit"
+          >
+            Cancel
+          </button>
+        </div>
       </form>
       
       <div v-if="submitMessage" class="alert mt-3" :class="submitSuccess ? 'alert-success' : 'alert-danger'">
@@ -84,10 +95,35 @@
                 <span class="rating-text">({{ review.rating }}/5)</span>
               </div>
             </div>
-            <small class="review-date text-muted">
-              {{ formatDate(review.created_at) }}
-            </small>
+            
+            <div class="review-meta">
+              <small class="review-date text-muted">
+                {{ formatDate(review.created_at) }}
+              </small>
+              
+              <!-- Edit and Delete buttons for user's own reviews -->
+              <div v-if="canModifyReview(review)" class="action-buttons mt-1">
+                <button 
+                  @click="startEdit(review)"
+                  class="btn btn-sm btn-outline-primary me-1"
+                  title="Edit Review"
+                  :disabled="editingReview && editingReview.id === review.id"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button 
+                  @click="deleteReview(review.id)"
+                  class="btn btn-sm btn-outline-danger"
+                  title="Delete Review"
+                  :disabled="deleting[review.id]"
+                >
+                  <span v-if="deleting[review.id]" class="spinner-border spinner-border-sm"></span>
+                  <i v-else class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
           </div>
+          
           <div class="review-content">
             <p>{{ review.review_text }}</p>
           </div>
@@ -118,10 +154,12 @@ export default {
         rating: 0,
         review_text: ''
       },
+      editingReview: null,
       hoverRating: 0,
       submitting: false,
       submitMessage: '',
       submitSuccess: false,
+      deleting: {},
       API_BASE: window.location.origin + '/cos30043/s103994779/A4/resources'
     };
   },
@@ -153,6 +191,30 @@ export default {
       this.newReview.rating = rating;
     },
 
+    canModifyReview(review) {
+      if (!this.isAuthenticated) return false;
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      return review.user_id == user.id;
+    },
+
+    startEdit(review) {
+      this.editingReview = review;
+      this.newReview = {
+        rating: review.rating,
+        review_text: review.review_text
+      };
+      document.querySelector('.add-review-section').scrollIntoView({ behavior: 'smooth' });
+    },
+
+    cancelEdit() {
+      this.editingReview = null;
+      this.newReview = {
+        rating: 0,
+        review_text: ''
+      };
+      this.submitMessage = '';
+    },
+
     async submitReview() {
       if (!this.newReview.rating || !this.newReview.review_text.trim()) {
         this.submitMessage = 'Please provide both a rating and review text.';
@@ -166,40 +228,12 @@ export default {
       try {
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         
-        const reviewData = {
-          movie_id: this.movieId,
-          movie_type: this.movieType,
-          user_id: user.id,
-          username: user.username,
-          rating: this.newReview.rating,
-          review_text: this.newReview.review_text.trim()
-        };
-
-        const response = await fetch(`${this.API_BASE}/api_reviews.php`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(reviewData)
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          this.submitMessage = 'Review submitted successfully!';
-          this.submitSuccess = true;
-          
-          // Reset form
-          this.newReview = {
-            rating: 0,
-            review_text: ''
-          };
-          
-          // Reload reviews
-          await this.loadReviews();
+        if (this.editingReview) {
+          // Update existing review
+          await this.updateReview(user);
         } else {
-          this.submitMessage = result.message || 'Failed to submit review.';
-          this.submitSuccess = false;
+          // Create new review
+          await this.createReview(user);
         }
       } catch (error) {
         this.submitMessage = 'Network error. Please try again.';
@@ -208,10 +242,123 @@ export default {
       } finally {
         this.submitting = false;
         
-        // Clear message after 5 seconds
         setTimeout(() => {
           this.submitMessage = '';
         }, 5000);
+      }
+    },
+
+    async createReview(user) {
+      const reviewData = {
+        movie_id: this.movieId,
+        movie_type: this.movieType,
+        user_id: user.id,
+        username: user.username,
+        rating: this.newReview.rating,
+        review_text: this.newReview.review_text.trim()
+      };
+
+      const response = await fetch(`${this.API_BASE}/api_reviews.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reviewData)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        this.submitMessage = 'Review submitted successfully!';
+        this.submitSuccess = true;
+        
+        // Reset form
+        this.newReview = {
+          rating: 0,
+          review_text: ''
+        };
+        
+        // Reload reviews
+        await this.loadReviews();
+      } else {
+        this.submitMessage = result.message || 'Failed to submit review.';
+        this.submitSuccess = false;
+      }
+    },
+
+    async updateReview(user) {
+      const reviewData = {
+        review_id: this.editingReview.id,
+        user_id: user.id,
+        rating: this.newReview.rating,
+        review_text: this.newReview.review_text.trim()
+      };
+
+      const response = await fetch(`${this.API_BASE}/api_reviews.php`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reviewData)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        this.submitMessage = 'Review updated successfully!';
+        this.submitSuccess = true;
+        
+        // Reset form and editing state
+        this.cancelEdit();
+        
+        // Reload reviews
+        await this.loadReviews();
+      } else {
+        this.submitMessage = result.message || 'Failed to update review.';
+        this.submitSuccess = false;
+      }
+    },
+
+    async deleteReview(reviewId) {
+      if (!confirm('Are you sure you want to delete this review?')) {
+        return;
+      }
+
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      this.deleting = { ...this.deleting, [reviewId]: true };
+
+      try {
+        const response = await fetch(`${this.API_BASE}/api_reviews.php?review_id=${reviewId}&user_id=${user.id}`, {
+          method: 'DELETE'
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Remove the review from the local array
+          this.reviews = this.reviews.filter(review => review.id != reviewId);
+          
+          // If edit is in progress, cancel the edit
+          if (this.editingReview && this.editingReview.id == reviewId) {
+            this.cancelEdit();
+          }
+          
+          // Show success message
+          this.submitMessage = 'Review deleted successfully!';
+          this.submitSuccess = true;
+          
+          // Clear message
+          setTimeout(() => {
+            this.submitMessage = '';
+          }, 3000);
+        } else {
+          alert(result.message || 'Failed to delete review');
+        }
+      } catch (error) {
+        console.error('Error deleting review:', error);
+        alert('Network error. Please try again.');
+      } finally {
+        this.deleting = { ...this.deleting, [reviewId]: false };
       }
     },
 
@@ -236,6 +383,7 @@ export default {
   watch: {
     movieId() {
       this.loadReviews();
+      this.cancelEdit();
     }
   }
 };
@@ -293,19 +441,6 @@ export default {
   background: white;
 }
 
-.review-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 0.5rem;
-}
-
-.reviewer-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
 .review-rating {
   display: flex;
   align-items: center;
@@ -320,10 +455,6 @@ export default {
 .rating-text {
   font-size: 0.875rem;
   color: #6c757d;
-}
-
-.review-date {
-  font-size: 0.875rem;
 }
 
 .review-content {
@@ -341,5 +472,68 @@ export default {
   padding: 2rem;
   background: #f8f9fa;
   border-radius: 0.5rem;
+}
+
+.review-actions {
+  display: flex;
+  align-items: center;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.reviewer-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.review-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.review-date {
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.form-buttons {
+  display: flex;
+  align-items: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .review-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .review-meta {
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+  }
+  
+  .action-buttons {
+    justify-content: flex-start;
+  }
 }
 </style>
