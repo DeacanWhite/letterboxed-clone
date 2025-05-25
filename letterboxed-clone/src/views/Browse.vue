@@ -32,7 +32,7 @@
                     <div class="card-image-container">
                         <img 
                             v-if="item.poster_path" 
-                            :src="`https://image.tmdb.org/t/p/w500${item.poster_path}`" 
+                            v-lazy-load="`https://image.tmdb.org/t/p/w500${item.poster_path}`"
                             class="card-img" 
                             :alt="item.title || item.name" 
                         />
